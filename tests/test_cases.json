@@ -1,0 +1,76 @@
+[
+  {
+    "id": "TC01",
+    "category": "clear_revenue_anomaly",
+    "description": "Revenue changes sharply between two reporting periods.",
+    "expected_anomaly_types": ["revenue_growth"],
+    "expected_detection": true
+  },
+  {
+    "id": "TC02",
+    "category": "clear_margin_anomaly",
+    "description": "Operating margin changes substantially between two reporting periods.",
+    "expected_anomaly_types": ["margin_change"],
+    "expected_detection": true
+  },
+  {
+    "id": "TC03",
+    "category": "clear_cashflow_anomaly",
+    "description": "Operating cash flow changes substantially relative to reported earnings.",
+    "expected_anomaly_types": ["cashflow_divergence"],
+    "expected_detection": true
+  },
+  {
+    "id": "TC04",
+    "category": "clear_debt_anomaly",
+    "description": "Debt changes substantially between reporting periods.",
+    "expected_anomaly_types": ["debt_change"],
+    "expected_detection": true
+  },
+  {
+    "id": "TC05",
+    "category": "market_financial_divergence",
+    "description": "Stock performance differs substantially from the direction of financial performance.",
+    "expected_anomaly_types": ["market_financial_gap"],
+    "expected_detection": true
+  },
+  {
+    "id": "TC06",
+    "category": "normal_period",
+    "description": "Financial metrics change only within normal ranges.",
+    "expected_anomaly_types": [],
+    "expected_detection": false
+  },
+  {
+    "id": "TC07",
+    "category": "below_threshold",
+    "description": "A financial metric changes noticeably but remains below the configured anomaly threshold.",
+    "expected_anomaly_types": [],
+    "expected_detection": false
+  },
+  {
+    "id": "TC08",
+    "category": "missing_data",
+    "description": "One or more required financial metrics are unavailable.",
+    "expected_anomaly_types": [],
+    "expected_detection": false
+  },
+  {
+    "id": "TC09",
+    "category": "multiple_anomalies",
+    "description": "Several financial metrics change substantially during the same period.",
+    "expected_anomaly_types": [
+      "revenue_growth",
+      "margin_change",
+      "debt_change"
+    ],
+    "expected_detection": true
+  },
+  {
+    "id": "TC10",
+    "category": "ambiguous_case",
+    "description": "The available financial information suggests an unusual change, but there is insufficient evidence to determine the cause.",
+    "expected_anomaly_types": ["revenue_growth"],
+    "expected_detection": true
+  }
+]

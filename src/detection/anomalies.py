@@ -40,6 +40,7 @@ def _severity(change: float, threshold: float) -> str:
 
     return "medium"
 
+# 1. revenue anomalies
 
 def detect_revenue_anomaly(income_statement: pd.DataFrame):
     previous, current = _latest_two(
@@ -68,6 +69,7 @@ def detect_revenue_anomaly(income_statement: pd.DataFrame):
         "rule": "Revenue changed by more than configured threshold.",
     }
 
+# profit margin anomalies
 
 def detect_margin_anomaly(income_statement: pd.DataFrame):
     previous_revenue, current_revenue = _latest_two(
@@ -111,6 +113,7 @@ def detect_margin_anomaly(income_statement: pd.DataFrame):
         "rule": "Operating margin changed by more than configured threshold.",
     }
 
+# cashflow anomalies
 
 def detect_cashflow_anomaly(
     income_statement: pd.DataFrame,
@@ -186,7 +189,7 @@ def detect_cashflow_anomaly(
         ),
     }
 
-
+# debt anomalies
 def detect_debt_anomaly(balance_sheet: pd.DataFrame):
     debt_row = None
 
@@ -228,7 +231,7 @@ def detect_debt_anomaly(balance_sheet: pd.DataFrame):
         "rule": "Total debt changed by more than configured threshold.",
     }
 
-
+# divergence between financials and market performance
 def detect_market_divergence(
     income_statement: pd.DataFrame,
     market_history: pd.DataFrame
@@ -292,7 +295,7 @@ def detect_market_divergence(
         ),
     }
 
-
+# main engine function to run all anomaly detection rules
 def detect_anomalies(
     ticker: str,
     financials: dict,

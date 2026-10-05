@@ -1,0 +1,9 @@
+[
+  {
+    "case_id": "aapl",
+    "input": {
+      "ticker": "AAPL",
+      "cik": "320193"
+    }
+  }
+]

@@ -1,0 +1,110 @@
+[
+  {
+    "id": "TC01",
+    "name": "Revenue spike",
+    "revenue_growth": 0.35,
+    "margin_change": 0.01,
+    "cashflow_divergence": 0.05,
+    "debt_change": 0.05,
+    "market_financial_gap": 0.05,
+    "expected_anomalies": ["revenue_growth"]
+  },
+  {
+    "id": "TC02",
+    "name": "Margin deterioration",
+    "revenue_growth": 0.05,
+    "margin_change": -0.10,
+    "cashflow_divergence": 0.05,
+    "debt_change": 0.05,
+    "market_financial_gap": 0.05,
+    "expected_anomalies": ["margin_change"]
+  },
+  {
+    "id": "TC03",
+    "name": "Cash flow divergence",
+    "revenue_growth": 0.05,
+    "margin_change": 0.01,
+    "cashflow_divergence": 0.30,
+    "debt_change": 0.05,
+    "market_financial_gap": 0.05,
+    "expected_anomalies": ["cashflow_divergence"]
+  },
+  {
+    "id": "TC04",
+    "name": "Debt increase",
+    "revenue_growth": 0.05,
+    "margin_change": 0.01,
+    "cashflow_divergence": 0.05,
+    "debt_change": 0.40,
+    "market_financial_gap": 0.05,
+    "expected_anomalies": ["debt_change"]
+  },
+  {
+    "id": "TC05",
+    "name": "Normal period",
+    "revenue_growth": 0.08,
+    "margin_change": 0.01,
+    "cashflow_divergence": 0.05,
+    "debt_change": 0.08,
+    "market_financial_gap": 0.05,
+    "expected_anomalies": []
+  },
+  {
+    "id": "TC06",
+    "name": "Multiple anomalies",
+    "revenue_growth": 0.30,
+    "margin_change": -0.08,
+    "cashflow_divergence": 0.30,
+    "debt_change": 0.30,
+    "market_financial_gap": 0.05,
+    "expected_anomalies": [
+      "revenue_growth",
+      "margin_change",
+      "cashflow_divergence",
+      "debt_change"
+    ]
+  },
+  {
+    "id": "TC07",
+    "name": "Below threshold",
+    "revenue_growth": 0.15,
+    "margin_change": 0.03,
+    "cashflow_divergence": 0.10,
+    "debt_change": 0.15,
+    "market_financial_gap": 0.10,
+    "expected_anomalies": []
+  },
+  {
+    "id": "TC08",
+    "name": "Market divergence",
+    "revenue_growth": 0.05,
+    "margin_change": 0.01,
+    "cashflow_divergence": 0.05,
+    "debt_change": 0.05,
+    "market_financial_gap": 0.40,
+    "expected_anomalies": ["market_financial_gap"]
+  },
+  {
+    "id": "TC09",
+    "name": "Revenue and margin anomaly",
+    "revenue_growth": 0.30,
+    "margin_change": -0.08,
+    "cashflow_divergence": 0.05,
+    "debt_change": 0.05,
+    "market_financial_gap": 0.05,
+    "expected_anomalies": [
+      "revenue_growth",
+      "margin_change"
+    ]
+  },
+  {
+    "id": "TC10",
+    "name": "Ambiguous change",
+    "revenue_growth": 0.22,
+    "margin_change": 0.04,
+    "cashflow_divergence": 0.15,
+    "debt_change": 0.10,
+    "market_financial_gap": 0.10,
+    "expected_anomalies": ["revenue_growth"]
+  }
+]

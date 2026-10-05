@@ -4,8 +4,6 @@ from pathlib import Path
 
 
 TEST_FILE = Path("tests/test_cases.json")
-
-
 def load_test_cases():
     with open(TEST_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -70,9 +68,10 @@ def evaluate_prototype(prototype_function, ticker="AAPL"):
 
 
 if __name__ == "__main__":
-    from src.prototypes.p1_baseline import run_p1
+    # from src.prototypes.p1_baseline import run_p1
+    from src.prototypes.p2_retrieval import run_p2
 
-    evaluation = evaluate_prototype(run_p1)
+    evaluation = evaluate_prototype(run_p2)
 
     print("\n" + "=" * 60)
     print("PROTOTYPE 1 — EVALUATION")

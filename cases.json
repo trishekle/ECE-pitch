@@ -1,9 +1,9 @@
 [
   {
-    "case_id": "aapl",
+    "case_id": "ko_market_gap",
     "input": {
-      "ticker": "AAPL",
-      "cik": "320193"
+      "ticker": "KO",
+      "cik": "21344"
     }
   }
 ]

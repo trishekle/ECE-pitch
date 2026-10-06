@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "prototype": "P1",
+    "case_id": "aapl",
+    "anomaly_correct": 1,
+    "grounding": 1,
+    "explanation_quality": 1,
+    "limitations": 2,
+    "unsupported_claims": 0
+  },
+  {
+    "prototype": "P3",
+    "case_id": "aapl",
+    "anomaly_correct": 1,
+    "grounding": 2,
+    "explanation_quality": 2,
+    "limitations": 2,
+    "unsupported_claims": 3
+  },
+  {
+    "prototype": "P2",
+    "case_id": "aapl",
+    "anomaly_correct": 1,
+    "grounding": 2,
+    "explanation_quality": 1,
+    "limitations": 2,
+    "unsupported_claims": 1
+  }
+]

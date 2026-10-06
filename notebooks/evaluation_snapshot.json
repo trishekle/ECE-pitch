@@ -1,0 +1,43 @@
+{
+  "evaluation_case": {
+    "case_id": "aapl",
+    "ticker": "AAPL",
+    "prototype_runs": 3,
+    "human_scored_runs": 3,
+    "detected_anomaly": "cashflow_divergence"
+  },
+  "measurements": [
+    {
+      "prototype": "P1",
+      "anomaly_correct": 1,
+      "grounding": 1,
+      "explanation_quality": 1,
+      "limitations": 2,
+      "unsupported_claims": 0,
+      "latency_seconds": 25.94
+    },
+    {
+      "prototype": "P2",
+      "anomaly_correct": 1,
+      "grounding": 2,
+      "explanation_quality": 1,
+      "limitations": 2,
+      "unsupported_claims": 1,
+      "latency_seconds": 31.524
+    },
+    {
+      "prototype": "P3",
+      "anomaly_correct": 1,
+      "grounding": 2,
+      "explanation_quality": 2,
+      "limitations": 2,
+      "unsupported_claims": 3,
+      "latency_seconds": 123.468
+    }
+  ],
+  "provenance": {
+    "scores_file": "evaluation_results.json",
+    "latencies_file": "outputs1.json",
+    "note": "Cached measurements copied from the project's saved AAPL run and scorecard. The notebook displays these; it does not rerun or independently verify the historical API calls."
+  }
+}

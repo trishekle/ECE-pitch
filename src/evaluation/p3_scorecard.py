@@ -5,6 +5,7 @@ import os
 import random
 import statistics as st
 import tempfile
+import time
 from pathlib import Path
 
 from src.prototypes.p1_baseline import run_p1
@@ -13,7 +14,7 @@ from src.prototypes.p3_multiagent import run_p3
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CASES_FILE = PROJECT_ROOT / "cases.json"
-OUTPUTS_FILE = PROJECT_ROOT / "outputs.json"
+OUTPUTS_FILE = PROJECT_ROOT / "outputs1.json"
 SCORES_FILE = PROJECT_ROOT / "evaluation_results.json"
 
 def _run_p1(ticker, cik):
@@ -68,11 +69,14 @@ def run_prototypes(prototype_names):
                 print(f"Already saved {name} for case {case['case_id']}; skipping.")
                 continue
 
+            start = time.perf_counter()
             result = PROTOTYPES[name](**case["input"])
+            latency_seconds = time.perf_counter() - start
             outputs.append({
                 "prototype": name,
                 "case_id": case["case_id"],
                 "output": result,
+                "latency_seconds": round(latency_seconds, 3),
             })
             save_outputs(outputs)
             completed.add(key)
@@ -128,15 +132,22 @@ def cmd_scorecard():
         print("  python -m src.evaluation.p3_scorecard score")
         return
 
-    print(f"\n{'Proto':<8}{'N':<4}{'Acc':<8}{'Ground':<9}{'Qual':<8}{'Limits':<9}{'Unsup/case':<12}{'Quality/6':<10}")
-    print("-" * 67)
+    outputs = json.loads(OUTPUTS_FILE.read_text(encoding="utf-8")) if OUTPUTS_FILE.exists() else []
+    print(f"\n{'Proto':<8}{'N':<4}{'Acc':<8}{'Ground':<9}{'Qual':<8}{'Limits':<9}{'Unsup/case':<12}{'Quality/6':<10}{'Latency(s)':<12}")
+    print("-" * 79)
     for p in sorted({s["prototype"] for s in scores}):
         r = [s for s in scores if s["prototype"] == p]
         m = lambda k: st.mean(x[k] for x in r)
         q = m("grounding") + m("explanation_quality") + m("limitations")
+        latencies = [
+            output["latency_seconds"]
+            for output in outputs
+            if output["prototype"] == p and "latency_seconds" in output
+        ]
+        latency = f"{st.mean(latencies):.2f}" if latencies else "n/a"
         print(f"{p:<8}{len(r):<4}{m('anomaly_correct'):<8.2f}{m('grounding'):<9.2f}"
               f"{m('explanation_quality'):<8.2f}{m('limitations'):<9.2f}"
-              f"{m('unsupported_claims'):<12.2f}{q:<10.2f}")
+              f"{m('unsupported_claims'):<12.2f}{q:<10.2f}{latency:<12}")
 
 def main():
     parser = argparse.ArgumentParser(description="Run and score the prototype evaluation.")

@@ -2,6 +2,7 @@ import time
 
 from src.prototypes.p1_baseline import run_p1
 from src.prototypes.p2_retrieval import run_p2
+from src.prototypes.p3_multiagent import run_p3
 
 
 EXPECTED_ANOMALY = "cashflow_divergence"

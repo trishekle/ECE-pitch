@@ -1,5 +1,8 @@
 import os
 import json
+import hashlib
+import tempfile
+from pathlib import Path
 
 from dotenv import load_dotenv
 from google import genai
@@ -14,13 +17,63 @@ from src.prototypes.gemini import generate_content_with_retry
 load_dotenv()
 
 MODEL = "gemini-3.5-flash"
+CHECKPOINT_DIR = Path(__file__).resolve().parents[2] / ".p3_checkpoints"
 
 client = genai.Client(
     api_key=os.getenv("AI_API_KEY")
 )
 
 
-def call_agent(role, instructions, data):
+def _load_checkpoint(ticker, cik):
+    checkpoint_id = hashlib.sha256(f"{ticker}:{cik}".encode()).hexdigest()[:16]
+    checkpoint_path = CHECKPOINT_DIR / f"{checkpoint_id}.json"
+    if checkpoint_path.exists():
+        checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+        if checkpoint.get("ticker") != ticker or checkpoint.get("cik") != cik:
+            raise ValueError(f"Checkpoint identity mismatch: {checkpoint_path}")
+    else:
+        checkpoint = {"ticker": ticker, "cik": cik, "agents": {}}
+    return checkpoint, checkpoint_path
+
+
+def _save_checkpoint(checkpoint, checkpoint_path):
+    CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=CHECKPOINT_DIR,
+            delete=False,
+        ) as temp_file:
+            temp_path = Path(temp_file.name)
+            json.dump(checkpoint, temp_file, indent=2)
+            temp_file.write("\n")
+        os.replace(temp_path, checkpoint_path)
+    finally:
+        if temp_path is not None and temp_path.exists():
+            temp_path.unlink()
+
+
+def _generate_checkpointed(agent_id, prompt, checkpoint, checkpoint_path):
+    signature = hashlib.sha256(f"{MODEL}\0{prompt}".encode()).hexdigest()
+    saved = checkpoint["agents"].get(agent_id)
+    if saved and saved["signature"] == signature:
+        print(f"Resuming: reusing saved {agent_id} result.")
+        return saved["response"]
+
+    response = generate_content_with_retry(
+        lambda: client.models.generate_content(model=MODEL, contents=prompt)
+    )
+    checkpoint["agents"][agent_id] = {
+        "signature": signature,
+        "response": response.text,
+    }
+    _save_checkpoint(checkpoint, checkpoint_path)
+    return response.text
+
+
+def call_agent(role, instructions, data, agent_id, checkpoint, checkpoint_path):
     """Run one specialized financial-analysis agent."""
 
     prompt = f"""
@@ -48,19 +101,18 @@ Possible Explanations
 Uncertainties
 """
 
-    response = generate_content_with_retry(
-        lambda: client.models.generate_content(
-            model=MODEL,
-            contents=prompt,
-        )
+    return _generate_checkpointed(
+        agent_id,
+        prompt,
+        checkpoint,
+        checkpoint_path,
     )
-
-    return response.text
 
 
 def run_p3(ticker="AAPL", cik="320193"):
 
     print(f"\nRunning P3 Multi-Agent Analysis for {ticker}...")
+    checkpoint, checkpoint_path = _load_checkpoint(ticker, cik)
 
     # ---------------------------------------------------------
     # 1. Retrieve the same underlying data used by P1 and P2
@@ -121,6 +173,9 @@ Identify important relationships between these metrics.
             "anomalies": anomalies,
             "financials": financials,
         },
+        "financial_agent",
+        checkpoint,
+        checkpoint_path,
     )
 
     # ---------------------------------------------------------
@@ -147,6 +202,9 @@ Do not infer information that is not present.
             "anomalies": anomalies,
             "sec_evidence": sec_evidence,
         },
+        "filing_agent",
+        checkpoint,
+        checkpoint_path,
     )
 
     # ---------------------------------------------------------
@@ -174,6 +232,9 @@ Only discuss relationships supported by the supplied data.
             "anomalies": anomalies,
             "market_data": market_data,
         },
+        "market_agent",
+        checkpoint,
+        checkpoint_path,
     )
 
     # ---------------------------------------------------------
@@ -223,14 +284,12 @@ Possible Explanations
 Limitations
 """
 
-    response = generate_content_with_retry(
-        lambda: client.models.generate_content(
-            model=MODEL,
-            contents=critic_prompt,
-        )
+    final_report = _generate_checkpointed(
+        "critic_agent",
+        critic_prompt,
+        checkpoint,
+        checkpoint_path,
     )
-
-    final_report = response.text
 
     # ---------------------------------------------------------
     # 8. Display final result
